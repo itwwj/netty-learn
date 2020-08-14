@@ -1,4 +1,6 @@
-package com.github.netty.nio;
+package com.github.netty.nio.client;
+
+import com.github.netty.nio.HexConvertUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -132,7 +134,7 @@ public class NioClientHandler implements Runnable {
                     buffer.flip();
                     byte[] bytes = new byte[buffer.remaining()];
                     buffer.get(bytes);
-                    String result =HexConvertUtil.BinaryToHexString(bytes);
+                    String result = HexConvertUtil.BinaryToHexString(bytes);
                     System.out.println("accept message:" + result);
                 } else if (read < 0) {
                     //取消通道

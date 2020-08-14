@@ -1,4 +1,4 @@
-package com.github.netty.aio;
+package com.github.netty.aio.client;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

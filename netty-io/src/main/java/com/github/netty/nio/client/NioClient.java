@@ -1,4 +1,4 @@
-package com.github.netty.nio;
+package com.github.netty.nio.client;
 
 import java.util.Scanner;
 
