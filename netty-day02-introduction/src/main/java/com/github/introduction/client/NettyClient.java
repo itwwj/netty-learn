@@ -1,6 +1,5 @@
 package com.github.introduction.client;
 
-import com.github.introduction.server.MyServerChannelInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;

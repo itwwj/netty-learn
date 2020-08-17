@@ -2,7 +2,6 @@ package com.github.introduction.server;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  *
