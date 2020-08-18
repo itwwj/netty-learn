@@ -20,5 +20,7 @@ public class MyServerChannelInitializer extends ChannelInitializer<SocketChannel
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         System.out.println("=========有客户端连接服务器=========");
         System.out.println("ip:"+socketChannel.localAddress().getHostString()+"         port:"+socketChannel.localAddress().getPort());
+        socketChannel.pipeline().addLast(new MyServerHandler());
+
     }
 }

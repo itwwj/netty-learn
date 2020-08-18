@@ -20,5 +20,6 @@ public class MyClientChannelInitializer extends ChannelInitializer<SocketChannel
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         System.out.println("=========连接到服务端=========");
         System.out.println("channelId："+socketChannel.id());
+        socketChannel.pipeline().addLast(new MyClientHandler());
     }
 }
