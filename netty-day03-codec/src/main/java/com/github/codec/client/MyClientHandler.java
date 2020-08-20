@@ -1,4 +1,4 @@
-package com.github.introduction.client;
+package com.github.codec.client;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

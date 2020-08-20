@@ -19,6 +19,7 @@
     <modules>
         <module>netty-day01-io</module>
         <module>netty-day02-introduction</module>
+        <module>netty-day03-codec</module>
     </modules>
 
     <properties>

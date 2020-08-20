@@ -1,0 +1,24 @@
+syntax="proto3"; // PB协议版本
+
+package com.github.codec.entity; // java包名
+
+option java_package = "com.github.codec.entity";// 生成类的包名，注意：会在指定路径下按照该包名的定义来生成文件夹
+option java_outer_classname="Person";// 生成类的类名，注意：下划线的命名会在编译的时候被自动改为驼峰命名
+
+// 定义一个 message
+message Person
+{
+ string name = 1;// string 类型
+  int32 age = 2;// int 类型
+  // 定义一个枚举
+  enum Corpus {
+    UNIVERSAL = 0;
+    WEB = 1;
+    IMAGES = 2;
+    LOCAL = 3;
+    NEWS = 4;
+    PRODUCTS = 5;
+    VIDEO = 6;
+  }
+  Corpus corpus = 4;
+}
