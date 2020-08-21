@@ -1,10 +1,15 @@
 package com.github.codec.server;
 
+import com.github.codec.proto.Person;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 
 import java.nio.charset.Charset;
@@ -26,6 +31,13 @@ public class MyServerChannelInitializer extends ChannelInitializer<SocketChannel
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         System.out.println("=========有客户端连接服务器=========");
         System.out.println("ip:"+socketChannel.localAddress().getHostString()+"         port:"+socketChannel.localAddress().getPort());
+
+        //protobuf 处理
+        socketChannel.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+        socketChannel.pipeline().addLast(new ProtobufDecoder(Person.getDefaultInstance()));
+        socketChannel.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+        socketChannel.pipeline().addLast(new ProtobufEncoder());
+
 
         // 基于换行符号
         socketChannel.pipeline().addLast(new LineBasedFrameDecoder(1024));

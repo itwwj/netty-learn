@@ -15,6 +15,8 @@ import java.util.Date;
  * @author jie
  */
 public class MyServerHandler extends ChannelInboundHandlerAdapter {
+
+
     /**
      * 当客户端主动连接服务端,通道活跃后触发
      *

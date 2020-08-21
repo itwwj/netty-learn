@@ -11,5 +11,11 @@
 
     <artifactId>netty-day03-codec</artifactId>
 
-
+<dependencies>
+    <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>3.7.1</version>
+    </dependency>
+</dependencies>
 </project>
