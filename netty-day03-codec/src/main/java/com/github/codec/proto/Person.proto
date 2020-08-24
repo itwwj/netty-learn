@@ -1,9 +1,0 @@
-syntax="proto3"; // PB协议版本
-
-
-option java_multiple_files = true;
-option java_outer_classname="PersonMessage";// 生成类的类名，注意：下划线的命名会在编译的时候被自动改为驼峰命名
-message Person {
-string name=1;// string 类型
-int32 age=2;// int 类型
-}

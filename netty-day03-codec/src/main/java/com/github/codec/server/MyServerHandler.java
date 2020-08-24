@@ -1,5 +1,7 @@
 package com.github.codec.server;
 
+import com.github.codec.proto.Person;
+import com.googlecode.protobuf.format.JsonFormat;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,11 +27,10 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        //在接收到客户端连接的时候通知客户端连接成功
-        String msg = "与服务端建立连接成功" + new Date();
-        ByteBuf buf = Unpooled.buffer(msg.getBytes().length);
-        buf.writeBytes(msg.getBytes("utf-8"));
-        ctx.writeAndFlush(buf);
+        Person.Builder builder = Person.newBuilder();
+        builder.setName("server");
+        builder.setAge(10);
+        ctx.writeAndFlush(builder.build());
     }
 
     /**
@@ -41,12 +42,8 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        //接收msg消息
-        ByteBuf buf = (ByteBuf) msg;
-        byte[] msgByte = new byte[buf.readableBytes()];
-        buf.readBytes(msgByte);
         System.out.print(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())  + "接收到消息：");
-        System.out.println(new String(msgByte, Charset.forName("utf-8")));
+        System.out.println( JsonFormat.printToString((Person) msg));
     }
 
     /**

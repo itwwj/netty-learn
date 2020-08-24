@@ -35,15 +35,6 @@ public class MyClientChannelInitializer extends ChannelInitializer<SocketChannel
         socketChannel.pipeline().addLast(new ProtobufDecoder(Person.getDefaultInstance()));
         socketChannel.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
         socketChannel.pipeline().addLast(new ProtobufEncoder());
-
-        // 基于换行符号
-        socketChannel.pipeline().addLast(new LineBasedFrameDecoder(1024));
-        // 基于指定字符串"$"
-        //socketChannel.pipeline().addLast(new DelimiterBasedFrameDecoder(1024,  Unpooled.copiedBuffer("$".getBytes()));
-        // 基于最大长度
-        // socketChannel.pipeline().addLast(new FixedLengthFrameDecoder(4));
-        // 解码转String，注意调整自己的编码格式GBK、UTF-8
-        socketChannel.pipeline().addLast(new StringDecoder(Charset.forName("utf-8")));
         socketChannel.pipeline().addLast(new MyClientHandler());
     }
 }

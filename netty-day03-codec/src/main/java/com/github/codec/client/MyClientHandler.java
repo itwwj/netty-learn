@@ -1,5 +1,7 @@
 package com.github.codec.client;
 
+import com.github.codec.proto.Person;
+import com.googlecode.protobuf.format.JsonFormat;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -18,18 +20,15 @@ public class MyClientHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        //通知服务端链接建立成功
-        String str = "与客户端链接建立成功" + " " + new Date();
-        ctx.writeAndFlush(str);
+        Person.Builder builder = Person.newBuilder();
+        builder.setName("client");
+        builder.setAge(20);
+        ctx.writeAndFlush(builder.build());
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        //接收msg消息
-        ByteBuf buf = (ByteBuf) msg;
-        byte[] msgByte = new byte[buf.readableBytes()];
-        buf.readBytes(msgByte);
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 接收到消息：" );
-        System.out.println(new String(msgByte, Charset.forName("utf-8")));
+        System.out.print(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())  + "接收到消息：");
+        System.out.println( JsonFormat.printToString((Person) msg));
     }
     /**
      * 当客户端主动断开服务端的链接后，这个通道就是不活跃的。也就是说客户端与服务端的关闭了通信通道并且不可以传输数据
