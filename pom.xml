@@ -20,6 +20,10 @@
         <module>netty-day01-io</module>
         <module>netty-day02-introduction</module>
         <module>netty-day03-codec</module>
+        <module>netty-day04-CustomCodec</module>
+        <module>netty-day05-httpServer</module>
+        <module>netty-day06-boot</module>
+        <module>netty-day07-uploading</module>
     </modules>
 
     <properties>

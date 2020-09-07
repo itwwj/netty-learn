@@ -1,0 +1,4 @@
+netty:
+  port: 1100
+server:
+  port: 5320
