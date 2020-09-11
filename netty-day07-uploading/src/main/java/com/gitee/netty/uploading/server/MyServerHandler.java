@@ -18,7 +18,10 @@ import java.util.Date;
  */
 
 public class MyServerHandler extends ChannelInboundHandlerAdapter {
-
+    /**
+     * 文件存放地址
+     */
+    private String path = System.getProperty("user.dir") + "\\netty-day07-uploading\\testFile\\";
 
     /**
      * 通道有消息触发
@@ -58,7 +61,7 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
                 break;
             case 2:
                 FileBurstData fileBurstData = (FileBurstData) fileTransferProtocol.getTransferObj();
-                FileBurstInstruct fileBurstInstruct = FileUtil.writeFile("E://", fileBurstData);
+                FileBurstInstruct fileBurstInstruct = FileUtil.writeFile(path, fileBurstData);
 
                 //保存断点续传信息
                 CacheUtil.burstDataMap.put(fileBurstData.getFileName(), fileBurstInstruct);
@@ -75,7 +78,6 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
                 break;
         }
     }
-
 
 
     /**

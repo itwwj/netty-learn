@@ -32,7 +32,3 @@ nbdist/
 .nb-gradle/
 generatorConfig.xml
 
-### nacos ###
-third-party/nacos/derby.log
-third-party/nacos/data/
-third-party/nacos/work/

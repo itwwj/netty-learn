@@ -37,6 +37,7 @@ public class FileBurstData {
      * Constants.FileStatus ｛0开始、1中间、2结尾、3完成｝
      */
     private Integer status;
+
     public FileBurstData(Integer status){
         this.status = status;
     }

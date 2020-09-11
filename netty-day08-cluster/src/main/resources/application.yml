@@ -1,0 +1,13 @@
+server:
+  port: 5320
+netty:
+  port: 1100
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/
+      suffix: .jsp
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: root
