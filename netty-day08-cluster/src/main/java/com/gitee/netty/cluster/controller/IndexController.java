@@ -1,9 +1,17 @@
 package com.gitee.netty.cluster.controller;
 
+import com.gitee.netty.cluster.config.RedisUtil;
+import com.gitee.netty.cluster.model.DeviceChannelInfo;
+import com.gitee.netty.cluster.model.ServerInfo;
+import com.gitee.netty.cluster.utils.CacheUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author jie
@@ -11,12 +19,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class IndexController {
 
-    @Value("${server.port}")
-    private int serverPort;
+    @Autowired
+    private RedisUtil redisUtil;
+
 
     @RequestMapping("/index")
     public String index(Model model) {
-        model.addAttribute("serverPort", serverPort);
+
+        Collection<ServerInfo> values = CacheUtil.serverInfoMap.values();
+        List<DeviceChannelInfo> ChannelInfoList = redisUtil.popList();
+
+        model.addAttribute("server",values);
+        model.addAttribute("device",ChannelInfoList);
         return "index";
     }
 }

@@ -39,6 +39,7 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
         DeviceChannelInfo deviceChannelInfo = new DeviceChannelInfo(channel.localAddress().getHostString(), channel.localAddress().getPort(), channel.id().toString(), new Date());
         extServerService.getRedisUtil().pushObj(deviceChannelInfo);
         CacheUtil.cacheChannel.put(channel.id().toString(), channel);
+        ctx.writeAndFlush(MsgUtil.buildMsg(channel.id().toString(), "ok"));
     }
 
     /**
@@ -49,13 +50,12 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
         log.info("客户端断开链接" + ctx.channel().localAddress().toString());
         extServerService.getRedisUtil().remove(ctx.channel().id().toString());
         CacheUtil.cacheChannel.remove(ctx.channel().id().toString(), ctx.channel());
+
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object objMsgJsonStr) throws Exception {
-        if (!(objMsgJsonStr instanceof MsgAgreement)) {
-            return;
-        }
+
         MsgAgreement msgAgreement = MsgUtil.json2Obj(objMsgJsonStr.toString());
         String toChannelId = msgAgreement.getToChannelId();
         //判断接收消息用户是否在本服务端

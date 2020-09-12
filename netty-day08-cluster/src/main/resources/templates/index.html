@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>netty集群</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+</head>
+<body>
+<h2>服务端集群列表</h2>
+<table>
+    <tr>
+        <th>ip</th>
+        <th>端口</th>
+        <th>启动时间</th>
+    </tr>
+    <tr th:each="list : ${server}">
+        <td th:text="${list.ip}"></td>
+        <td th:text="${list.port}"></td>
+        <td th:text="${list.openDate}"></td>
+    </tr>
+</table>
+<h2>设备列表：</h2>
+<table>
+    <tr>
+        <th>ip</th>
+        <th>端口</th>
+        <th>clientId</th>
+        <th>连接时间</th>
+    </tr>
+    <tr th:each="list : ${device}">
+        <td th:text="${list.ip}"></td>
+        <td th:text="${list.port}"></td>
+        <td th:text="${list.channelId}"></td>
+        <td th:text="${list.linkDate}"></td>
+    </tr>
+</table>
+</body>
+</html>
