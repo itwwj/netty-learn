@@ -5,10 +5,11 @@
     <title>netty集群</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+
 </head>
 <body>
 <h2>服务端集群列表</h2>
-<table>
+<table id="tab01" border="1px solid #ccc" cellspacing="0" cellpadding="0">
     <tr>
         <th>ip</th>
         <th>端口</th>
@@ -20,8 +21,9 @@
         <td th:text="${list.openDate}"></td>
     </tr>
 </table>
+
 <h2>设备列表：</h2>
-<table>
+<table id="tab02" border="1px solid #ccc" cellspacing="0" cellpadding="0">
     <tr>
         <th>ip</th>
         <th>端口</th>
