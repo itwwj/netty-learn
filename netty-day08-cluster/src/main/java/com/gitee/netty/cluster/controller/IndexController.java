@@ -32,8 +32,8 @@ public class IndexController {
         Set<String> keys = redisTemplate.keys("*");
         List<ServerInfo> values = new ArrayList<>();
         for (String key : keys) {
-            if (key.contains("server")) {
-                values.add(JSON.parseObject(redisTemplate.boundValueOps(key).get().toString(), ServerInfo.class));
+            if (key.contains("nettyServer")) {
+                values.add(JSON.parseObject(redisTemplate.boundValueOps(key).get(), ServerInfo.class));
             }
         }
         List<DeviceChannelInfo> ChannelInfoList = redisUtil.popList();

@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 
 /**
+ * redisTemplate配置类
  * @author jie
  */
 @Configuration

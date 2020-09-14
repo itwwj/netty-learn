@@ -1,6 +1,5 @@
 package com.gitee.netty.cluster.config;
 
-import com.gitee.netty.cluster.config.MsgAgreementReceiver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -22,10 +21,4 @@ public class ReceiverConfig {
         container.addMessageListener(msgAgreementListenerAdapter, new PatternTopic("message_pub"));
         return container;
     }
-
-    @Bean
-    public MessageListenerAdapter msgAgreementListenerAdapter(MsgAgreementReceiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage");
-    }
-
 }

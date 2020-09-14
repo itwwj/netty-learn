@@ -6,24 +6,37 @@ import com.gitee.netty.cluster.utils.CacheUtil;
 import com.gitee.netty.cluster.utils.MsgUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.stereotype.Component;
 
 
 /**
+ * redis订阅消息处理实现类
+ *
  * @author jie
  */
 @Slf4j
-@Service
-public class MsgAgreementReceiver implements ReceiveInterface {
+@Component
+public class MsgAgreementReceiver extends MessageListenerAdapter {
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     /**
      * 接收redis推送的消息如果当前服务连接的有此设备就推送消息
+     *
      * @param message 消息
      */
     @Override
-    public void receiveMessage(Object message) {
-        log.info("接收到redis PUSH消息：{}", message);
-        MsgAgreement msgAgreement = JSON.parseObject(message.toString(), MsgAgreement.class);
+    public void onMessage(Message message, byte[] pattern) {
+        String msg = redisTemplate.getStringSerializer().deserialize(message.getBody());
+        String topic = redisTemplate.getStringSerializer().deserialize(message.getChannel());
+        log.info("来自" + topic + "的消息：" + msg);
+
+        MsgAgreement msgAgreement = JSON.parseObject(msg, MsgAgreement.class);
         String toChannelId = msgAgreement.getToChannelId();
         Channel channel = CacheUtil.cacheChannel.get(toChannelId);
         if (null == channel) {
