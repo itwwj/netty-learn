@@ -12,7 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @author jie
  */
 @Configuration
-public class PublisherConfig {
+public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, Object> redisMessageTemplate(RedisConnectionFactory connectionFactory) {

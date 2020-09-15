@@ -1,6 +1,5 @@
 package com.gitee.netty.cluster.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

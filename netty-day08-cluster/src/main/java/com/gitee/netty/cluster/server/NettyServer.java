@@ -3,7 +3,7 @@ package com.gitee.netty.cluster.server;
 import com.alibaba.fastjson.JSON;
 import com.gitee.netty.cluster.model.ServerInfo;
 import com.gitee.netty.cluster.utils.CacheUtil;
-import com.gitee.netty.cluster.utils.ExtServerService;
+import com.gitee.netty.cluster.utils.CacheService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -42,7 +42,7 @@ public class NettyServer implements CommandLineRunner {
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private ExtServerService extServerService;
+    private CacheService cacheService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -51,7 +51,7 @@ public class NettyServer implements CommandLineRunner {
             b.group(parentGroup, childGroup)
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 128)
-                    .childHandler(new MyChannelInitializer(extServerService));
+                    .childHandler(new MyChannelInitializer(cacheService));
             ChannelFuture channelFuture = b.bind(port).syncUninterruptibly();
             this.channel = channelFuture.channel();
         } catch (Exception e) {
@@ -59,6 +59,7 @@ public class NettyServer implements CommandLineRunner {
         }
         String ip = InetAddress.getLocalHost().getHostAddress();
         Date date = new Date();
+        //每秒向注册中心注册一下自己的服务端信息 如果两秒没有注册redis便清除此服务端信息
         CacheUtil.executorService.submit(()->{
             try {
                 while (true) {

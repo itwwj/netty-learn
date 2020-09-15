@@ -3,7 +3,7 @@ package com.gitee.netty.cluster.server;
 import com.gitee.netty.cluster.model.MsgAgreement;
 import com.gitee.netty.cluster.model.DeviceChannelInfo;
 import com.gitee.netty.cluster.utils.CacheUtil;
-import com.gitee.netty.cluster.utils.ExtServerService;
+import com.gitee.netty.cluster.utils.CacheService;
 import com.gitee.netty.cluster.utils.MsgUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,10 +22,10 @@ import java.util.Date;
 public class MyServerHandler extends ChannelInboundHandlerAdapter {
 
 
-    private ExtServerService extServerService;
+    private CacheService cacheService;
 
-    public MyServerHandler(ExtServerService extServerService) {
-        this.extServerService = extServerService;
+    public MyServerHandler(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     /**
@@ -37,7 +37,7 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
         log.info("有一客户端链接到本服务端 channelId:" + channel.id() + " IP:" + channel.localAddress().getHostString());
         //保存设备信息
         DeviceChannelInfo deviceChannelInfo = new DeviceChannelInfo(channel.localAddress().getHostString(), channel.localAddress().getPort(), channel.id().toString(), new Date());
-        extServerService.getRedisUtil().pushObj(deviceChannelInfo);
+        cacheService.getRedisUtil().pushObj(deviceChannelInfo);
         CacheUtil.cacheChannel.put(channel.id().toString(), channel);
         ctx.writeAndFlush(MsgUtil.buildMsg(channel.id().toString(), "ok"));
     }
@@ -48,14 +48,19 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         log.info("客户端断开链接" + ctx.channel().localAddress().toString());
-        extServerService.getRedisUtil().remove(ctx.channel().id().toString());
+        cacheService.getRedisUtil().remove(ctx.channel().id().toString());
         CacheUtil.cacheChannel.remove(ctx.channel().id().toString(), ctx.channel());
 
     }
 
+    /**
+     * 处理通道内的数据
+     * @param ctx
+     * @param objMsgJsonStr
+     * @throws Exception
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object objMsgJsonStr) throws Exception {
-
         MsgAgreement msgAgreement = MsgUtil.json2Obj(objMsgJsonStr.toString());
         String toChannelId = msgAgreement.getToChannelId();
         //判断接收消息用户是否在本服务端
@@ -65,17 +70,16 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
             return;
         }
         //如果为NULL则接收消息的用户不在本服务端，需要push消息给全局
-        log.info("接收消息的用户不在本服务端，PUSH！");
-        extServerService.push(msgAgreement);
+        cacheService.push(msgAgreement);
     }
 
     /**
-     * 抓住异常，当发生异常的时候，可以做一些相应的处理，比如打印日志、关闭链接
+     * 发现异常关闭连接打印日志
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ctx.close();
-        extServerService.getRedisUtil().remove(ctx.channel().id().toString());
+        cacheService.getRedisUtil().remove(ctx.channel().id().toString());
         CacheUtil.cacheChannel.remove(ctx.channel().id().toString(), ctx.channel());
         log.error("异常信息：\r\n" + cause.getMessage());
     }

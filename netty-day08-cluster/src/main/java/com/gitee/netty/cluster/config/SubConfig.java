@@ -12,7 +12,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
  * @author jie
  */
 @Configuration
-public class ReceiverConfig {
+public class SubConfig {
 
     @Bean
     public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory, MessageListenerAdapter msgAgreementListenerAdapter) {

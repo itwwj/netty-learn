@@ -7,6 +7,7 @@ import com.gitee.netty.cluster.model.MsgAgreement;
 
 /**
  * 构建消息
+ *
  * @author jie
  */
 public class MsgUtil {
@@ -16,6 +17,7 @@ public class MsgUtil {
     }
 
     public static MsgAgreement json2Obj(String objJsonStr) {
+        objJsonStr = objJsonStr.replace("\r\n", "");
         return JSON.parseObject(objJsonStr, MsgAgreement.class);
     }
 

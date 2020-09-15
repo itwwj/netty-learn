@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class MsgAgreementReceiver extends MessageListenerAdapter {
+public class MsgReceiver extends MessageListenerAdapter {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
