@@ -47,11 +47,16 @@ public class RedisUtil {
 
     /**
      * 根据channelId查询连接信息
+     *
      * @param channelId
      * @return
      */
     public DeviceChannelInfo selectByChannel(String channelId) {
-       return (DeviceChannelInfo) redisTemplate.opsForHash().get("deviceIds", channelId);
+        Object deviceIds = redisTemplate.opsForHash().get("deviceIds", channelId);
+        if (deviceIds == null) {
+            return null;
+        }
+        return JSON.parseObject(deviceIds.toString(), DeviceChannelInfo.class);
     }
 
     /**
