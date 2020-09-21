@@ -25,6 +25,7 @@
         <module>netty-day06-boot</module>
         <module>netty-day07-uploading</module>
         <module>netty-day08-cluster</module>
+        <module>netty-day09-websocket</module>
     </modules>
 
     <properties>

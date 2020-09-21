@@ -21,6 +21,7 @@ public class RedisUtil {
 
     /**
      * 向redis存入设备连接信息
+     *
      * @param deviceChannelInfo
      */
     public void pushObj(DeviceChannelInfo deviceChannelInfo) {
@@ -29,6 +30,7 @@ public class RedisUtil {
 
     /**
      * 查询redis中的设备连接信息
+     *
      * @return
      */
     public List<DeviceChannelInfo> popList() {
@@ -44,7 +46,17 @@ public class RedisUtil {
     }
 
     /**
+     * 根据channelId查询连接信息
+     * @param channelId
+     * @return
+     */
+    public DeviceChannelInfo selectByChannel(String channelId) {
+       return (DeviceChannelInfo) redisTemplate.opsForHash().get("deviceIds", channelId);
+    }
+
+    /**
      * 移除某个设备信息
+     *
      * @param channelId
      */
     public void remove(String channelId) {

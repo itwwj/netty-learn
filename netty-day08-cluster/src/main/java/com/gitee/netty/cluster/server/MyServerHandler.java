@@ -10,6 +10,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
 
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
@@ -28,6 +30,21 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
         this.cacheService = cacheService;
     }
 
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            IdleState state = ((IdleStateEvent) evt).state();
+            if (state == IdleState.READER_IDLE) {
+                log.info("客户端" + ctx.channel().id() + "长时间未通讯，即将剔除。");
+                // 在规定时间内没有收到客户端的上行数据, 主动断开连接
+                ctx.disconnect();
+            }
+        } else {
+            super.userEventTriggered(ctx, evt);
+        }
+    }
+
     /**
      * 当客户端主动链接服务端的链接后，这个通道就是活跃的了。也就是客户端与服务端建立了通信通道并且可以传输数据
      */
@@ -36,10 +53,16 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
         SocketChannel channel = (SocketChannel) ctx.channel();
         log.info("有一客户端链接到本服务端 channelId:" + channel.id() + " IP:" + channel.localAddress().getHostString());
         //保存设备信息
-        DeviceChannelInfo deviceChannelInfo = new DeviceChannelInfo(channel.localAddress().getHostString(), channel.localAddress().getPort(), channel.id().toString(), new Date());
+        DeviceChannelInfo deviceChannelInfo = DeviceChannelInfo.builder()
+                .channelId(channel.id().toString())
+                .ip(channel.localAddress().getHostString())
+                .port(channel.localAddress().getPort())
+                .linkDate(new Date())
+                .build();
+
         cacheService.getRedisUtil().pushObj(deviceChannelInfo);
         CacheUtil.cacheChannel.put(channel.id().toString(), channel);
-        ctx.writeAndFlush(MsgUtil.buildMsg(channel.id().toString(), "ok"));
+        ctx.writeAndFlush(MsgUtil.buildMsg(channel.id().toString(), "ok")+"\r\n");
     }
 
     /**
@@ -55,13 +78,19 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
 
     /**
      * 处理通道内的数据
+     *
      * @param ctx
      * @param objMsgJsonStr
      * @throws Exception
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object objMsgJsonStr) throws Exception {
-        MsgAgreement msgAgreement = MsgUtil.json2Obj(objMsgJsonStr.toString());
+        String msg = objMsgJsonStr.toString();
+        if (msg.length() < 5) {
+            log.info("心跳消息：" + msg);
+            return;
+        }
+        MsgAgreement msgAgreement = MsgUtil.json2Obj(msg);
         String toChannelId = msgAgreement.getToChannelId();
         //判断接收消息用户是否在本服务端
         Channel channel = CacheUtil.cacheChannel.get(toChannelId);
