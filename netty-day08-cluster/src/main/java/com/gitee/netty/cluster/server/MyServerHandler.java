@@ -5,6 +5,7 @@ import com.gitee.netty.cluster.model.DeviceChannelInfo;
 import com.gitee.netty.cluster.utils.CacheUtil;
 import com.gitee.netty.cluster.utils.CacheService;
 import com.gitee.netty.cluster.utils.MsgUtil;
+import com.gitee.netty.cluster.utils.NetWorkUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -51,18 +52,18 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
-        log.info("有一客户端链接到本服务端 channelId:" + channel.id() + " IP:" + channel.localAddress().getHostString());
+        log.info("有一客户端链接到本服务端 channelId:" + channel.id());
         //保存设备信息
         DeviceChannelInfo deviceChannelInfo = DeviceChannelInfo.builder()
                 .channelId(channel.id().toString())
-                .ip(channel.localAddress().getHostString())
+                .ip(NetWorkUtils.getHost())
                 .port(channel.localAddress().getPort())
                 .linkDate(new Date())
                 .build();
 
         cacheService.getRedisUtil().pushObj(deviceChannelInfo);
         CacheUtil.cacheChannel.put(channel.id().toString(), channel);
-        ctx.writeAndFlush(MsgUtil.buildMsg(channel.id().toString(), "ok")+"\r\n");
+        ctx.writeAndFlush("ok \r\n");
     }
 
     /**
@@ -70,10 +71,9 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        log.info("客户端断开链接" + ctx.channel().localAddress().toString());
+        log.info("客户端断开链接" + ctx.channel().id());
         cacheService.getRedisUtil().remove(ctx.channel().id().toString());
         CacheUtil.cacheChannel.remove(ctx.channel().id().toString(), ctx.channel());
-
     }
 
     /**

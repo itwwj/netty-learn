@@ -60,18 +60,17 @@ public class NettyServer implements CommandLineRunner {
         String ip = InetAddress.getLocalHost().getHostAddress();
         Date date = new Date();
         //每秒向注册中心注册一下自己的服务端信息 如果两秒没有注册redis便清除此服务端信息
-        CacheUtil.executorService.submit(()->{
+        CacheUtil.executorService.submit(() -> {
             try {
                 while (true) {
                     redisTemplate.opsForValue().set("nettyServer" + ip, JSON.toJSONString(new ServerInfo(ip, 1100, date)), 2 * 1000, TimeUnit.MILLISECONDS);
                     Thread.sleep(1000);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         });
     }
-
 
     public void destroy() {
         if (null == channel) {
