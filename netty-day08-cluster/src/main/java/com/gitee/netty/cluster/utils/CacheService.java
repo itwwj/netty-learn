@@ -19,7 +19,10 @@ public class CacheService {
     @Autowired
     private RedisUtil redisUtil;
 
-
+    /**
+     * 将通道数据广播给指定的主题  主题格式为：message_pub+节点ip+节点端口
+     * @param msgAgreement
+     */
     public void push(MsgAgreement msgAgreement) {
         DeviceChannelInfo deviceChannelInfo = redisUtil.selectByChannel(msgAgreement.getToChannelId());
         if (deviceChannelInfo == null) {

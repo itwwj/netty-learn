@@ -1,0 +1,11 @@
+server:
+  port: 9100
+spring:
+  data:
+    elasticsearch:
+      cluster-name: logs
+      cluster-nodes: 192.168.1.177:9300
+      repositories:
+        enabled: true
+netty:
+  port: 1100

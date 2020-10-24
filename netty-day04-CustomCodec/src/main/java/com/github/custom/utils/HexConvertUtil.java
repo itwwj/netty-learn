@@ -1,9 +1,9 @@
- package com.github.custom.utils;
+package com.github.custom.utils;
 
- import java.math.BigInteger;
- import java.util.Arrays;
+import java.math.BigInteger;
+import java.util.Arrays;
 
- /**
+/**
  * Created by Administrator on 2019/1/5.
  */
 public class HexConvertUtil {
@@ -34,17 +34,10 @@ public class HexConvertUtil {
         return hex.toString();
     }
 
-     public static void main(String[] args) {
 
-
-         String hello_word = convertStringToHex("hello");
-
-         System.out.println(hello_word);
-
-
-     }
     /**
      * 16进制转为字符串
+     *
      * @param hex
      * @return
      */
@@ -66,6 +59,7 @@ public class HexConvertUtil {
 
     /**
      * 16进制字符串到字节数组
+     *
      * @param hexString
      * @return
      */
@@ -89,6 +83,7 @@ public class HexConvertUtil {
 
     /**
      * 返回匹配字符
+     *
      * @param c
      * @return
      */
@@ -99,6 +94,7 @@ public class HexConvertUtil {
 
     /**
      * 将字节数组转换为short类型，即统计字符串长度
+     *
      * @param b
      * @return
      */
@@ -109,6 +105,7 @@ public class HexConvertUtil {
 
     /**
      * 将字节数组转换为16进制字符串
+     *
      * @param bytes 字节数组
      * @return
      */
@@ -125,10 +122,10 @@ public class HexConvertUtil {
     }
 
 
-
     /**
      * 将其它进制的数字（字符串形式）转换为十进制的数字(无符号)
-     * @param str1  其它进制的数字（字符串形式）
+     *
+     * @param str1 其它进制的数字（字符串形式）
      * @param base 传进的字符串原始进制数
      * @return
      */
@@ -149,14 +146,15 @@ public class HexConvertUtil {
         return num;
     }
 
-     /**
-      * 十六进制字符串转十进制long (有符号)
-      * @param str
-      * @return
-      */
-    public static Long hexToLong(String str){
+    /**
+     * 十六进制字符串转十进制long (有符号)
+     *
+     * @param str
+     * @return
+     */
+    public static Long hexToLong(String str) {
 
-        BigInteger integer=new BigInteger(str,16);
+        BigInteger integer = new BigInteger(str, 16);
         return integer.longValue();
     }
 
@@ -184,5 +182,90 @@ public class HexConvertUtil {
         return new String(buf, charPos, (32 - charPos));
     }
 
+    /**
+     * 验证和校验
+     *
+     * @param str
+     * @return
+     */
+    public static boolean examine(String str) {
+        String replace = str.replace(" ", "");
+        if (replace.length() < 5 || replace.length() % 2 != 0) {
+            throw new ClassCastException("数据长度不合法");
+        }
+        long num = 0;
+        for (int i = 0; i < (replace.length()-4)/ 2; i++) {
+            Long aLong = hexToLong(replace.substring(2 * i, 2 * i + 2));
+            num = num + aLong;
+        }
+        String substring = replace.substring(replace.length() - 4);
+        if (num != hexToLong(substring)) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * 验证和校验
+     *
+     * @return
+     */
+    public static boolean examine(byte[] bytes) {
 
+        String replace = BinaryToHexString(bytes).replace(" ", "");
+        if (replace.length() < 5 || replace.length() % 2 != 0) {
+            throw new ClassCastException("数据长度不合法");
+        }
+        long num = 0;
+        for (int i = 0; i < (replace.length()-4)/ 2; i++) {
+            Long aLong = hexToLong(replace.substring(2 * i, 2 * i + 2));
+            num = num + aLong;
+        }
+        String substring = replace.substring(replace.length() - 4);
+        if (num != hexToLong(substring)) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * 十六进制加上和校验
+     *
+     * @param str
+     * @return
+     * @throws Exception
+     */
+    public static String getExamine(String str) throws Exception {
+        String replace = str.replace(" ", "");
+        if (replace.length() % 2 != 0) {
+            throw new ClassCastException("数据长度不合法");
+        }
+        long num = 0;
+        for (int i = 0; i < replace.length() / 2; i++) {
+            Long aLong = hexToLong(replace.substring(2 * i, 2 * i + 2));
+            num = num + aLong;
+        }
+        String s = toOtherBaseString(num, 16);
+        return replace + zeroize(s, 4);
+    }
+
+    /**
+     * 根据长度在字符串前边补零
+     *
+     * @param str
+     * @param size
+     * @return
+     * @throws Exception
+     */
+    public static String zeroize(String str, int size) throws Exception {
+        String replace = str.replace(" ", "");
+        if (size < str.length()) {
+            throw new Exception("数据长度不合法");
+        }
+        for (int i = 0; i < size - str.length(); i++) {
+            replace = "0" + replace;
+        }
+        return replace;
+    }
+
+    public static void main(String[] args) throws Exception {
+    }
 }

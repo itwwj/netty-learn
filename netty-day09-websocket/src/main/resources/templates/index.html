@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>websocket通讯</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+
+</head>
+<body>
+<h1>前端太菜，凑合看吧</h1>
+
+<h2>设备列表：</h2>
+<table id="tab02" border="1px solid #ccc" cellspacing="0" cellpadding="0">
+    <tr>
+        <th>通讯id</th>
+        <th>设备编号</th>
+        <th>设备ip</th>
+        <th>设备端口</th>
+        <th>连接时间</th>
+    </tr>
+    <tr th:each="list : ${devices}">
+        <td th:text="${list.channelId}"></td>
+        <td th:text="${list.number}"></td>
+        <td th:text="${list.ip}"></td>
+        <td th:text="${list.port}"></td>
+        <td th:text="${list.connectTime}"></td>
+    </tr>
+</table>
+<h2>消息：</h2>
+<div>
+    <textarea placeholder="接收消息"></textarea>
+    <textarea placeholder="发送内容"></textarea>
+    <button>发送</button>
+</div>
+
+</body>
+</html>

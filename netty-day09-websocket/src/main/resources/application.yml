@@ -1,0 +1,13 @@
+server:
+  port: 9100
+netty:
+  socket:
+    port: 1883
+  websocket:
+    port: 8083
+spring:
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+    prefix: classpath:/templates/
+    suffix: .html

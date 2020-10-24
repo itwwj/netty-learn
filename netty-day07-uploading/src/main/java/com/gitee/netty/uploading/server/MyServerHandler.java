@@ -49,7 +49,7 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
                         CacheUtil.burstDataMap.remove(fileDescInfo.getFileName());
                     }
                     //传输完成删除断点信息
-                    System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 接收客户端传输文件请求[断点续传]。" + JSON.toJSONString(fileBurstInstructOld));
+                    System.err.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 接收客户端传输文件请求[断点续传]。" + JSON.toJSONString(fileBurstInstructOld));
                     ctx.writeAndFlush(MsgUtil.buildTransferInstruct(fileBurstInstructOld));
                     return;
                 }
@@ -57,7 +57,7 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
                 //发送信息
                 FileTransferProtocol sendFileTransferProtocol = MsgUtil.buildTransferInstruct(Constants.FileStatus.BEGIN, fileDescInfo.getFileUrl(), 0);
                 ctx.writeAndFlush(sendFileTransferProtocol);
-                System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 接收客户端传输文件请求。" + JSON.toJSONString(fileDescInfo));
+                System.err.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 接收客户端传输文件请求。" + JSON.toJSONString(fileDescInfo));
                 break;
             case 2:
                 FileBurstData fileBurstData = (FileBurstData) fileTransferProtocol.getTransferObj();
@@ -67,7 +67,7 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
                 CacheUtil.burstDataMap.put(fileBurstData.getFileName(), fileBurstInstruct);
 
                 ctx.writeAndFlush(MsgUtil.buildTransferInstruct(fileBurstInstruct));
-                System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 接收客户端传输文件数据。" + JSON.toJSONString(fileBurstData));
+                System.err.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 接收客户端传输文件数据。" + JSON.toJSONString(fileBurstData));
 
                 //传输完成删除断点信息
                 if (fileBurstInstruct.getStatus() == Constants.FileStatus.COMPLETE) {

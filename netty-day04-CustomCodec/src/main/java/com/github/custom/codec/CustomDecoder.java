@@ -1,23 +1,28 @@
 package com.github.custom.codec;
 
+import com.github.custom.utils.HexConvertUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 自定义解码器
+ *
  * @author jie
  */
 public class CustomDecoder extends ByteToMessageDecoder {
     /**
-     *十六进制字符串数组解析
+     * 十六进制字符串数组解析
      * AA为开始符
      * AB为结束符
+     *
      * @param channelHandlerContext
-     * @param byteBuf 传入数据
-     * @param list 添加解码消息
+     * @param byteBuf               传入数据
+     * @param list                  添加解码消息
      * @throws Exception
      */
     @Override
@@ -26,7 +31,7 @@ public class CustomDecoder extends ByteToMessageDecoder {
         if (byteBuf.readableBytes() < 4) {
             return;
         }
-
+        StringBuilder builder = new StringBuilder();
         int beginIndex; //记录包头位置
 
         while (true) {
@@ -34,14 +39,15 @@ public class CustomDecoder extends ByteToMessageDecoder {
             beginIndex = byteBuf.readerIndex();
             // 标记包头开始的index
             byteBuf.markReaderIndex();
+
             // 读到了协议的开始标志，结束while循环
-            if (byteBuf.readByte() == 0x09) {
+            if (HexConvertUtil.examine(builder.toString())) {
                 break;
             }
-            // 未读到包头，略过一个字节
-            // 每次略过，一个字节，去读取，包头信息的开始标记
+            // 重置读索引为0
             byteBuf.resetReaderIndex();
             byteBuf.readByte();
+
             // 当略过，一个字节之后，
             // 数据包的长度，又变得不满足
             // 此时，应该结束。等待后面的数据到达

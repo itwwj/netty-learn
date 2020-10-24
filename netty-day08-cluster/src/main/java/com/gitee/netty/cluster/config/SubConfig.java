@@ -21,6 +21,13 @@ public class SubConfig {
     @Value("${netty.port}")
     private int port;
 
+    /**
+     * 接受广播消息配置 接受主题格式为：message_pub+本机ip+本程序端口
+     * @param connectionFactory
+     * @param msgAgreementListenerAdapter
+     * @return
+     * @throws UnknownHostException
+     */
     @Bean
     public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory, MessageListenerAdapter msgAgreementListenerAdapter) throws UnknownHostException {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();

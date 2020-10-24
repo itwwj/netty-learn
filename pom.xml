@@ -26,10 +26,18 @@
         <module>netty-day07-uploading</module>
         <module>netty-day08-cluster</module>
         <module>netty-day09-websocket</module>
+        <module>netty-day10-logs</module>
+        <module>netty-day11-ssl</module>
+        <module>netty-day12-rpc</module>
+        <module>soundCode-day01-byteBuf</module>
+        <module>soundCode-day02-ServerBootstrap</module>
+        <module>soundCode-day03-NioEventLoopGroup</module>
+        <module>soundCode-day04-channel</module>
+        <module>soundCode-day05-channelPipeline</module>
     </modules>
 
     <properties>
-        <netty_version>4.1.36.Final</netty_version>
+        <netty_version>4.1.24.Final</netty_version>
     </properties>
     <dependencies>
         <!-- Netty4.1 -->
@@ -37,12 +45,6 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>${netty_version}</version>
-        </dependency>
-        <!-- Log -->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -55,6 +57,11 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
             <version>1.18.12</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.4.3</version>
         </dependency>
     </dependencies>
 

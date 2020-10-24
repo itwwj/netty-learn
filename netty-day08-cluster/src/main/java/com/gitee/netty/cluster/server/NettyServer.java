@@ -20,6 +20,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +39,8 @@ public class NettyServer implements CommandLineRunner {
 
     @Value("${netty.port}")
     private int port;
+    @Value("${netty.ip}")
+    private String ip;
     @Autowired
     private StringRedisTemplate redisTemplate;
 
@@ -52,7 +55,7 @@ public class NettyServer implements CommandLineRunner {
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childHandler(new MyChannelInitializer(cacheService));
-            ChannelFuture channelFuture = b.bind(port).syncUninterruptibly();
+            ChannelFuture channelFuture = b.bind(new InetSocketAddress(ip,port)).syncUninterruptibly();
             this.channel = channelFuture.channel();
         } catch (Exception e) {
             log.error(e.getMessage());
