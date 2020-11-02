@@ -154,7 +154,7 @@ public class HexConvertUtil {
      */
     public static Long hexToLong(String str) {
 
-        BigInteger integer = new BigInteger(str, 16);
+        BigInteger integer = new BigInteger(str.replace(" ",""), 16);
         return integer.longValue();
     }
 
