@@ -4,8 +4,8 @@ import com.github.custom.utils.HexConvertUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.util.CharsetUtil;
 
-import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class CustomDecoder extends ByteToMessageDecoder {
 
-    private final int BASE_LENGTH = 4;
+    private final int BASE_LENGTH = 2;
 
     /**
      * 十六进制字符串数组解析
@@ -27,24 +27,19 @@ public class CustomDecoder extends ByteToMessageDecoder {
      */
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf in, List<Object> list) throws Exception {
-        //基础长度不足，我们设定基础长度为4
+        //报文基本长度包含一个帧头一个结尾最少为2
         if (in.readableBytes() < BASE_LENGTH) {
             return;
         }
-
-        int beginIdx; //记录包头位置
-
+        int start; //记录帧头位置
         while (true) {
-            // 获取包头开始的index
-            beginIdx = in.readerIndex();
+            // 获取帧头开始的index
+            start = in.readerIndex();
             // 将当前的readerIndex备份到markedReaderIndex中
             in.markReaderIndex();
             // 读到了协议的开始标志，结束while循环
-            ByteBuf byteBuf = in.readBytes(1);
-            byte[] bytes = new byte[byteBuf.readableBytes()];
-            String s = HexConvertUtil.BinaryToHexString(bytes);
-            Long l = HexConvertUtil.hexToLong(s);
-            if (l == 170) {
+            byte header = in.readByte();
+            if (header == 0x0A) {
                 break;
             }
             //不是帧头就还原为备份位置
@@ -56,36 +51,29 @@ public class CustomDecoder extends ByteToMessageDecoder {
                 return;
             }
         }
-
-        //剩余长度不足可读取数量[没有内容长度位]
+        //剩余长度不足1，没有数据长度帧位
         int readableCount = in.readableBytes();
         if (readableCount <= 1) {
-            in.readerIndex(beginIdx);
+            in.readerIndex(start);
             return;
         }
-
-        //长度域占4字节，读取int
-        ByteBuf byteBuf = in.readBytes(1);
-        byte[] bytes = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(bytes);
-        Long l = HexConvertUtil.hexToLong(HexConvertUtil.BinaryToHexString(bytes));
-
-        //剩余长度不足可读取数量[没有结尾标识]
+        //数据长度帧位
+        byte len = in.readByte();
+        String s = Byte.toString(len);
+        Long size = HexConvertUtil.hexToLong(s);
+        //剩余长度不足可读取数量[没有帧尾标识]
         readableCount = in.readableBytes();
-        if (readableCount < l + 1) {
-            in.readerIndex(beginIdx);
+        if (readableCount < size + 1) {
+            in.readerIndex(start);
             return;
         }
-
-        ByteBuf msgContent = in.readBytes(Math.toIntExact(l));
-
-        //如果没有结尾标识，还原指针位置[其他标识结尾]
+        ByteBuf msg = in.readBytes(Math.toIntExact(size));
+        //如果没有帧尾标识，还原指针位置[其他标识结尾]
         byte end = in.readByte();
-        if (end != 0x55) {
-            in.readerIndex(beginIdx);
+        if (end != 0x0B) {
+            in.readerIndex(start);
             return;
         }
-        byte[] array = msgContent.array();
-        list.add(HexConvertUtil.BinaryToHexString(array));
+        list.add(msg.toString(CharsetUtil.UTF_8));
     }
 }
