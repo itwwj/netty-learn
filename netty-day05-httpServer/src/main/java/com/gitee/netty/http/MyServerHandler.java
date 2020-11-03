@@ -43,11 +43,10 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
                 //接收msg消息
                 byte[] msgByte = new byte[byteData.readableBytes()];
                 byteData.readBytes(msgByte);
-                System.out.println(new String(msgByte, Charset.forName("UTF-8")));
+                System.out.println("收到请求："+new String(msgByte, Charset.forName("UTF-8")));
             }
         }
-        String sendMsg = "服务端回复：（可以自定义回复）";
-
+        String sendMsg = "来自netty服务端的回复：";
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,
                 HttpResponseStatus.OK,
