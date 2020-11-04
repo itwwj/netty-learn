@@ -5,6 +5,7 @@ import com.gitee.netty.uploading.model.FileTransferProtocol;
 import com.gitee.netty.uploading.utils.MsgUtil;
 import io.netty.channel.ChannelFuture;
 
+import java.awt.*;
 import java.io.File;
 
 /**
