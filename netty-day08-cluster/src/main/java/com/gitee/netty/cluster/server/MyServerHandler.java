@@ -19,6 +19,8 @@ import java.util.Date;
 
 
 /**
+ * 操作类
+ *
  * @author jie
  */
 @Slf4j
@@ -60,7 +62,6 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
                 .port(channel.localAddress().getPort())
                 .linkDate(new Date())
                 .build();
-
         cacheService.getRedisUtil().pushObj(deviceChannelInfo);
         CacheUtil.cacheChannel.put(channel.id().toString(), channel);
         ctx.writeAndFlush("ok \r\n");

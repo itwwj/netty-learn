@@ -24,7 +24,6 @@ public class MsgReceiver extends MessageListenerAdapter {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
-
     /**
      * 接收redis推送的消息如果当前服务连接的有此设备就推送消息
      *
