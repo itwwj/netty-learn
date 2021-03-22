@@ -67,7 +67,7 @@ public class NettyServer implements CommandLineRunner {
         //每3秒向注册中心注册一下自己的服务端信息 如果5秒没有注册redis便清除此服务端信息
         CacheUtil.executorService.submit(() -> {
             try {
-                while (true) {
+                while (channel.isActive()) {
                     redisTemplate.opsForValue().set("nettyServer" + ip, JSON.toJSONString(new ServerInfo(ip, 1100, date)), 5 * 1000, TimeUnit.MILLISECONDS);
                     Thread.sleep(3*1000);
                 }

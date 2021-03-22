@@ -1,6 +1,6 @@
 package com.github.io.nio.client;
 
-import com.github.io.nio.HexConvertUtil;
+import com.github.io.nio.server.HexConvertUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
